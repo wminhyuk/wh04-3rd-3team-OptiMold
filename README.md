@@ -37,3 +37,79 @@
 
 ## ⚙️ 설치 및 실행 방법
 *(추가 예정)*
+
+
+
+# Airflow DAG: .mat File Generation and Simulink Execution
+
+
+---
+
+## ✅ 개요
+이 DAG는 다음 단계를 자동으로 수행합니다:
+
+1. 시뮬레이션 입력을 위한 현실 기반 노이즈가 포함된 `.mat` 파일 생성
+2. 생성된 파일 경로를 MATLAB CLI로 전달하여 Simulink 모델 실행
+3. 시작부터 종료까지 워크플로우 관리
+
+---
+
+## 📂 파일 구조
+```
+dags/
+  generate_mat_and_simulate_dag.py     # Airflow DAG 정의 파일
+src/optimold/
+  generate_physical_mat.py             # .mat 파일 생성 로직
+```
+
+---
+
+## ⚙ 요구 사항
+- PDM 또는 venv로 구성된 Python 환경의 Airflow 2.x
+- CLI(`matlab -batch`) 실행이 가능한 MATLAB 설치
+- Simulink 모델 파일: `third_real_model.slx`
+- `/mnt/c/...` 형태로 접근 가능한 WSL 또는 Windows 경로
+
+---
+
+## 🔄 워크플로우 단계
+
+### `start`
+DAG 시작 지점을 나타내는 Dummy 태스크입니다.
+
+### `generate_mat`
+`generate_physical_mat.py`의 `generate_mat(seed=42)` 함수를 호출하여:
+- 압력/밸브/후진 관련 이상치가 반영된 `.mat` 파일 생성
+- 저장 위치: `/mnt/c/Users/Admin/MATLAB/Projects/my_project/cycle_YYYYMMDD_HHMMSS.mat`
+- 전체 파일 경로를 XCom으로 반환
+
+### `simulate_matlab`
+- XCom을 통해 전달받은 `.mat` 파일 경로 사용
+- Windows 스타일 경로(`C:\Users\Admin\...`)로 변환
+- 다음 MATLAB 명령 실행:
+```matlab
+load('path_to_file.mat');
+sim('third_real_model.slx');
+```
+
+### `end`
+DAG 종료를 나타내는 Dummy 태스크입니다.
+
+---
+
+## 🛠 실행 예시
+```bash
+pdm run airflow webserver &
+pdm run airflow scheduler &
+```
+DAG 파일 위치:
+```bash
+/home/seominhyuk/airflow/dags/generate_mat_and_simulate_dag.py
+```
+
+---
+
+## 🧩 확장 가능 항목
+- Simulink 실행 결과 로깅 및 외부 DB 연동
+- 이상 탐지를 위한 Spark 파이프라인 구성
+- Simulink 결과를 CSV, Excel, 이미지 등으로 자동 내보내기
