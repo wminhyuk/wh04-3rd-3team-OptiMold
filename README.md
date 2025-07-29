@@ -49,25 +49,40 @@ Matlab Simulink 기반의 정밀 모델링, Airflow 자동화, Streamlit 인터�
 
 ---
 
-## 🧰 사용 기술
-| 단계 | 기술 스택 |
-|------|-----------|
-| 공정 시뮬레이션 | Matlab Simulink (Simscape) |
-| 데이터 수집 및 공정 스케줄링 | Apache Airflow |
-| 데이터 전처리 및 분석 | Python (Jupyter lab) |
-| 분석 시각화 및 리포팅 | Streamlit |
-
-
 ## 🌐 시스템 구성도
 
 [Matlab Simulink] → [Airflow 자동 반복] → [CSV 저장] → [Python 분석] → [Streamlit 대시보드]
 → 이상 탐지 + 공정 예측      
 
 ---
+## 🧰 기술 스택
+
+| 분류 | 사용 기술 |
+|------|-----------|
+| 시뮬레이션 | Matlab Simulink (Simscape) |
+| 공정 스케줄링 및 자동화 | Apache Airflow |
+| 데이터 전처리 및 분석 | Python (Jupyter lab), Spark |
+| 분석 시각화 | Streamlit - Matplotlib, PIL |
+| 인과성 분석 | Granger Causality, networkx |
+| 데이터 저장 | CSV 기반 로컬 저장 (향후 DB 확장 가능) |
+| HMI 인터페이스 | streamlit-image-coordinates 라이브러리 |
+
+---
+
+## 📂 주요 폴더 구조
+```
+.
+├── dags/                  # Airflow DAG 파일
+│   └── generate_mat_and_simulate_dag.py
+├── src/optimold/          # 시뮬레이션 입력 mat 파일 생성 및 처리 스크립트
+│   └── generate_physical_mat.py
+├── Anal_base/             # 공정 출력 시계열 시각화 결과 이미지
+├── GS_base/               # Granger Causality 분석 이미지
+├── hmi_base/              # HMI 클릭 기반 이미지 자료
+└── Main.py                # Streamlit 기반 메인 대시보드
 
 
 # Airflow DAG: .mat File Generation and Simulink Execution
-
 
 ---
 
@@ -78,14 +93,7 @@ Matlab Simulink 기반의 정밀 모델링, Airflow 자동화, Streamlit 인터�
 2. 생성된 파일 경로를 MATLAB CLI로 전달하여 Simulink 모델 실행
 3. 시작부터 종료까지 워크플로우 관리
 
----
 
-## 📂 파일 구조
-```
-dags/
-  generate_mat_and_simulate_dag.py     # Airflow DAG 정의 파일
-src/optimold/
-  generate_physical_mat.py             # .mat 파일 생성 로직
 ```
 
 ---
@@ -132,6 +140,9 @@ DAG 파일 위치:
 ```bash
 /home/seominhyuk/airflow/dags/generate_mat_and_simulate_dag.py
 ```
+
+streamlit run Main.py
+
 
 ---
 
