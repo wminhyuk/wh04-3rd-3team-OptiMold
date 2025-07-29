@@ -106,7 +106,7 @@ Matlab Simulink 기반의 정밀 모델링, Airflow 자동화, Streamlit 인터�
 
 ---
 
-## 🔄 워크플로우 단계
+## 🔄 Airflow 워크플로우 단계
 
 ### `start`
 DAG 시작 지점을 나타내는 Dummy 태스크입니다.
@@ -132,6 +132,8 @@ DAG 종료를 나타내는 Dummy 태스크입니다.
 ---
 
 ## 🛠 실행 예시
+
+- Airflow 시작
 ```bash
 pdm run airflow webserver &
 pdm run airflow scheduler &
@@ -141,12 +143,16 @@ DAG 파일 위치:
 /home/seominhyuk/airflow/dags/generate_mat_and_simulate_dag.py
 ```
 
+- Streamlit 대시보드 실행
 streamlit run Main.py
 
+- MATLAB 연결
+load('path_to_mat_file.mat');
+sim('third_real_model.slx');
 
 ---
 
-## 🧩 확장 가능 항목
-- Simulink 실행 결과 로깅 및 외부 DB 연동
-- 이상 탐지를 위한 Spark 파이프라인 구성
-- Simulink 결과를 CSV, Excel, 이미지 등으로 자동 내보내기
+## 🎯 향후 확장 가능성
+- Simulink 실행 결과 외부 DB 연동 및 Web 기반 히스토리 저장/분석 기능
+- Spark 기반 이상 탐지 자동화 → 실시간 스트리밍 대응
+- 실제 PLC 센서와의 연동으로 실공정 반영 강화
