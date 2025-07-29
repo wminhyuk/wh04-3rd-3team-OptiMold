@@ -1,18 +1,33 @@
-# wh04-3rd-3team-OptiMold
+# 🛠 wh04-3rd-3team-OptiMold
+
+## 🚀 OptiMold: 자동차 범퍼 사출 성형 공정의 스마트 모니터링 및 이상 탐지 시스템
 
 ---
 
-# 🚀 옵티몰드(OptiMold) - 사출 성형 공정 데이터 파이프라인
-
 ## 📌 프로젝트 개요
-옵티몰드는 자동차 산업에서 사용되는 범퍼의 사출 성형 공정 데이터를 시뮬레이션하여, 이상 탐지 및 품질 분석을 자동화하는 데이터 파이프라인 구축 프로젝트입니다. Matlab Simulink를 활용하여 실제 공정 환경과 유사한 금형 온도 및 사출 압력 데이터를 생성하고, Airflow, Apache Spark, Zeppelin, Streamlit 등을 통해 데이터 분석 및 시각화를 수행합니다.
+**OptiMold**는 자동차 부품(범퍼)의 사출 성형 공정을 Simulink로 시뮬레이션하고, 실제 공정 환경을 모사한 데이터를 기반으로 이상 탐지 및 공정 예측을 수행하는 **스마트 제조 분석 파이프라인**입니다.  
 
-## 🎯 주요 목표
-- **데이터 시뮬레이션:** Matlab Simulink를 통해 사출 성형 공정에서의 금형 온도 및 사출 압력 데이터를 시계열 형태로 생성
-- **데이터 파이프라인 구축:** Airflow or Spark Streaming 활용하여 시뮬레이션 데이터를 자동 수집 및 전처리
-- **데이터 분석 및 이상 탐지:** Apache Spark를 이용한 데이터 기반의 이상 탐지와 품질 분석
-- **데이터 시각화:** Zeppelin을 통해 데이터 분석 결과와 공정 변수 간의 상관관계를 시각화
-- **대시보드 제공:** Streamlit을 이용한 시계열 데이터 및 분석 결과를 웹 기반 대시보드 형태로 제공
+Matlab Simulink 기반의 정밀 모델링, Airflow 자동화, Streamlit 인터페이스를 통해 **공정 모니터링 → 이상 공정 자동 식별 → 품질 분류 → 공정 시계열 예측**까지 이어지는 통합 시스템을 구축하였습니다.
+
+---
+
+## 🎯 주요 기능
+- 💾 **Simulink 기반 사출 공정 시뮬레이션**
+  - 실제 범퍼 제조 환경을 반영한 Matlab 모델 구현 및 `.mat` 기반 반복 시뮬레이션 수행
+
+- 🔄 **Airflow 자동화 파이프라인**
+  - `.mat` 생성 → 시뮬레이션 실행 → 결과 저장까지 자동화된 DAG 구성
+
+- 📊 **시계열 기반 이상 탐지 및 분류**
+  - 사출 압력/위치/속도 등 주요 출력 변수 분석을 통해 총 6가지 시나리오로 공정 분류
+
+- 🧠 **Granger Causality 분석**
+  - 제어 ↔ 출력 변수 간 인과성 시각화 네트워크 구축 및 해석 제공
+
+- 📈 **Streamlit 기반 HMI 시각화 및 공정 예측**
+  - 클릭 기반 센서 위치 정보, 실시간 분석 결과 요약, 입력값 기반 공정 예측 기능 탑재
+
+---
 
 ## 🌟 기대효과
 - 스마트 제조와 공정 자동화에 대한 실제적 이해 향상
@@ -20,24 +35,35 @@
 - 엔드-투-엔드 제조 데이터 파이프라인의 설계와 실행 경험
 - 실제 자동차 부품 제조 공정에 적용 가능한 실질적 인사이트 제공
 
-## 🛠️ MVP (최소 기능 제품)
-자동차 범퍼의 사출 성형 공정에서 발생하는 금형 온도 및 사출 압력 데이터를 Simulink로 시계열로 생성하고, 데이터 수집 및 전처리, 이상 탐지 및 시각화까지의 과정을 통합한 MVP 시스템을 구현합니다.
+---
+
+## 🧪 이상 시나리오 정의 및 분류 예시
+
+| 분류 | 설명 | 판정 기준 |
+|------|------|------------|
+| Short shot | 충진 부족으로 형상이 미완성됨 | `Volume_max < 45` |
+| Overpacking / Flash | 과충진에 따른 수지 누출 발생 | `Volume_max > 55` |
+| Jetting | 고속 유량 서지로 인한 외관 이상 | `Flow Rate 기울기 변화 지속시간 > 0.6초` |
+| Sink mark | 보압 종료 후 속도 정지로 수축 자국 | `8초 이후 flat duration > 1.95초` |
+| Sticking / Slip | 보압 중 피스톤 불안정 정지 | `flat ratio (6초 이후) < 0.9` |
+
+---
 
 ## 🧰 사용 기술
 | 단계 | 기술 스택 |
 |------|-----------|
-| 시뮬레이션 | Matlab Simulink, Simscape |
-| 데이터 수집 및 스케줄링 | Apache Airflow, Spark Streaming |
-| 데이터 전처리 및 분석 | Python, pandas, NumPy |
-| 대규모 데이터 분석 | Apache Spark (PySpark) |
-| 분석 환경 및 시각화 | Apache Zeppelin |
-| 웹 시각화 및 리포팅 | Streamlit |
-| 데이터베이스 탐색 | DBeaver |
-| 클라우드 인프라 | AWS EC2 또는 GCP Compute Engine (선택) |
+| 공정 시뮬레이션 | Matlab Simulink (Simscape) |
+| 데이터 수집 및 공정 스케줄링 | Apache Airflow |
+| 데이터 전처리 및 분석 | Python (Jupyter lab) |
+| 분석 시각화 및 리포팅 | Streamlit |
 
-## ⚙️ 설치 및 실행 방법
-*(추가 예정)*
 
+## 🌐 시스템 구성도
+
+[Matlab Simulink] → [Airflow 자동 반복] → [CSV 저장] → [Python 분석] → [Streamlit 대시보드]
+→ 이상 탐지 + 공정 예측      
+
+---
 
 
 # Airflow DAG: .mat File Generation and Simulink Execution
@@ -67,7 +93,7 @@ src/optimold/
 ## ⚙ 요구 사항
 - PDM 또는 venv로 구성된 Python 환경의 Airflow 2.x
 - CLI(`matlab -batch`) 실행이 가능한 MATLAB 설치
-- Simulink 모델 파일: `third_real_model.slx`
+- Simulink 모델 파일: `fifth_real_model.slx`
 - `/mnt/c/...` 형태로 접근 가능한 WSL 또는 Windows 경로
 
 ---
@@ -89,7 +115,7 @@ DAG 시작 지점을 나타내는 Dummy 태스크입니다.
 - 다음 MATLAB 명령 실행:
 ```matlab
 load('path_to_file.mat');
-sim('third_real_model.slx');
+sim('fifth_real_model.slx');
 ```
 
 ### `end`
